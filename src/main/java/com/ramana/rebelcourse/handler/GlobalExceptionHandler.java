@@ -36,7 +36,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .collect(Collectors.toList());
 
 
-        return new ResponseEntity<>(BaseResponse.setAsFailed(errors), headers, status);
+        return new ResponseEntity<>(BaseResponse.setAsFailed("Failed", errors), headers, status);
     }
 
     @ExceptionHandler({AuthenticationException.class, AccessDeniedException.class})

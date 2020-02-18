@@ -2,9 +2,9 @@ package com.ramana.rebelcourse.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.ramana.rebelcourse.constant.Constant;
 import lombok.Getter;
 import lombok.Setter;
-import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +13,6 @@ import java.util.List;
 
 /**
  * code example:
- * 4 = unauthorized
  * 3 = failed
  * 2 = not found
  * 1 = server error
@@ -25,14 +24,13 @@ import java.util.List;
 @JsonPropertyOrder({
         "code",
         "msg",
+        "messages",
         "data"
 })
 public class BaseResponse<T> {
 
     @JsonIgnore
     protected final static Logger log = LoggerFactory.getLogger(BaseResponse.class);
-    @JsonIgnore
-    protected final static String SUCCESS = "Success";
 
     private long code = 3;
 
@@ -55,22 +53,12 @@ public class BaseResponse<T> {
         return baseResponse;
     }
 
-    public static <E> BaseResponse<E> setAsFailed(List<String> msgList) {
-        log.error("Maaf, terjadi kesalahan");
-        BaseResponse<E> baseResponse = BaseResponse.getInstance();
-        baseResponse.setCode(3);
-        baseResponse.setMsg("Maaf, terjadi kesalahan");
-        baseResponse.setData(null);
-        baseResponse.setMessages(msgList);
-        return baseResponse;
-    }
-
     public static <E> BaseResponse<E> setAsFailed(Exception e) {
         e.printStackTrace();
         log.error("Maaf, terjadi kesalahan | Error:" + e.getMessage() + " | Caused " + e.getCause());
         BaseResponse<E> baseResponse = BaseResponse.getInstance();
         baseResponse.setCode(3);
-        baseResponse.setMsg("Maaf, terjadi kesalahan | Error: " + e.getMessage());
+        baseResponse.setMsg("Maaf, terjadi kesalahan");
         baseResponse.setData(null);
         return baseResponse;
     }
@@ -80,7 +68,7 @@ public class BaseResponse<T> {
         log.error(message + " | Error: " + e.getMessage() + " | Caused " + e.getCause());
         BaseResponse<E> baseResponse = BaseResponse.getInstance();
         baseResponse.setCode(3);
-        baseResponse.setMsg(message + " | Error: " + e.getMessage());
+        baseResponse.setMsg(message);
         baseResponse.setData(null);
         return baseResponse;
     }
@@ -105,10 +93,10 @@ public class BaseResponse<T> {
     }
 
     public static <E> BaseResponse<E> setAsSuccess(E data) {
-        log.info(SUCCESS);
+        log.info(Constant.SUCCESS);
         BaseResponse<E> baseResponse = BaseResponse.getInstance();
         baseResponse.setCode(0);
-        baseResponse.setMsg(SUCCESS);
+        baseResponse.setMsg(Constant.SUCCESS);
         baseResponse.setData(data);
         return baseResponse;
     }
@@ -123,10 +111,10 @@ public class BaseResponse<T> {
     }
 
     public static <E> BaseResponse<E> setAsSuccess() {
-        log.info(SUCCESS);
+        log.info(Constant.SUCCESS);
         BaseResponse<E> baseResponse = BaseResponse.getInstance();
         baseResponse.setCode(0);
-        baseResponse.setMsg(SUCCESS);
+        baseResponse.setMsg(Constant.SUCCESS);
         baseResponse.setData(null);
         return baseResponse;
     }
@@ -170,7 +158,7 @@ public class BaseResponse<T> {
     public static <E> BaseResponse<E> setUnauthorizedResponse(String message) {
         log.error(message);
         BaseResponse<E> baseResponse = BaseResponse.getInstance();
-        baseResponse.setCode(4);
+        baseResponse.setCode(2);
         baseResponse.setMsg(message);
         baseResponse.setData(null);
         return baseResponse;

@@ -42,7 +42,7 @@ public class MovieApiServiceImpl implements MovieApiService {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        service = retrofit.create(MovieApiRepository.class);
+        if (service == null) service = retrofit.create(MovieApiRepository.class);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class MovieApiServiceImpl implements MovieApiService {
             MovieApiResponse movieApiResponse = new Gson().fromJson(json, MovieApiResponse.class);
             List<MovieResponse> movies = new ArrayList<>();
 
-            for (Result movie : movieApiResponse.getResults()){
+            for (Result movie : movieApiResponse.getResults()) {
                 movies.add(new MovieResponse(movie));
             }
 

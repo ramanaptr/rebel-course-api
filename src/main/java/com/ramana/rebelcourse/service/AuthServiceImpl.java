@@ -50,15 +50,17 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     @Override
     public BaseResponse<Object> loginUser(LoginRequest loginRequest) {
         try {
-            if (!isAuthenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
+            if (loginRequest.getUsername().trim().contains(" ")) {
+                return BaseResponse.setAsFailed("Sorry, username can't use space!");
+            } else if (!isAuthenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
                 return BaseResponse.setAsFailed("Auth Failed");
             }
 
             User saved = userService.findByUsername(loginRequest.getUsername());
             if (saved == null) {
-                return BaseResponse.setAsNotFound("Failed to login, user not found");
+                return BaseResponse.setAsNotFound("Failed to login");
             } else if (!passwordEncode.matches(loginRequest.getPassword(), saved.getPassword())) {
-                return BaseResponse.setAsFailed("Failed to login, wrong password");
+                return BaseResponse.setAsFailed("Failed to login");
             }
 
             return getAuthResponse(saved);
