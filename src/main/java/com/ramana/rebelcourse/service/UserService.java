@@ -5,9 +5,11 @@ import com.ramana.rebelcourse.payload.request.UserRequest;
 import com.ramana.rebelcourse.payload.response.BaseResponse;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Optional;
+
 public interface UserService {
 
-    User findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
     UserDetails loadByUsername(String username);
 

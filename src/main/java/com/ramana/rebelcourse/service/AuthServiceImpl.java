@@ -52,15 +52,15 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         try {
             if (loginRequest.getUsername().trim().contains(" ")) {
                 return BaseResponse.setAsFailed("Sorry, username can't use space!");
-            } else if (!isAuthenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
-                return BaseResponse.setAsFailed("Auth Failed");
             }
 
-            User saved = userService.findByUsername(loginRequest.getUsername());
+            User saved = userService.findByUsername(loginRequest.getUsername()).orElse(null);
             if (saved == null) {
                 return BaseResponse.setAsNotFound("Failed to login");
             } else if (!passwordEncode.matches(loginRequest.getPassword(), saved.getPassword())) {
                 return BaseResponse.setAsFailed("Failed to login");
+            } else if (!isAuthenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
+                return BaseResponse.setAsFailed("Auth Failed");
             }
 
             return getAuthResponse(saved);
@@ -83,7 +83,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
     @Override
     public boolean setNewToken(String username, String token) {
-        User user = userService.findByUsername(username);
+        User user = userService.findByUsername(username).orElse(null);
         if (user == null) return false;
 
         user.setToken(token);
@@ -93,7 +93,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.findByUsername(username);
+        User user = userService.findByUsername(username).orElse(null);
         return new CustomUser(user);
     }
 }
